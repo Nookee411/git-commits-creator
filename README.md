@@ -191,4 +191,16 @@ Contributions are welcome! Please ensure:
 
 ## Disclaimer
 
-This tool is intended for educational purposes and personal use. Be mindful of GitHub's Terms of Service when using automated commit generation tools.
+**This tool is intended strictly for testing and development purposes only.** It is designed to help developers:
+- Test git workflows and automation scripts
+- Demonstrate commit history visualization tools
+- Practice git operations in isolated test repositories
+- Develop and debug applications that interact with git repositories
+
+**This tool should NOT be used to:**
+- Fake contribution activity on your GitHub profile
+- Mislead employers, collaborators, or the open-source community
+- Artificially inflate contribution graphs
+- Misrepresent your actual development activity
+
+Using this tool to create misleading activity is unethical and may violate GitHub's Terms of Service. Always be honest and transparent about your contributions and development work.
