@@ -5,18 +5,51 @@ import { GitError } from "./errors.js"
 
 const MAIN_FILE = "Main.MD"
 
-const daysBefore = Options.integer("days-before").pipe(Options.withDefault(365), Options.withAlias("db"))
-const daysAfter = Options.integer("days-after").pipe(Options.withDefault(60), Options.withAlias("da"))
-const frequency = Options.integer("frequency").pipe(Options.withDefault(80), Options.withAlias("f"))
-const maxCommitsPerDay = Options.integer("max-commits-per-day").pipe(Options.withDefault(15), Options.withAlias("mcpd"))
-const minCommitsPerDay = Options.integer("min-commits-per-day").pipe(Options.withDefault(0), Options.withAlias("mcpd"))
+const daysBefore = Options.integer("days-before").pipe(
+  Options.withDefault(365),
+  Options.withAlias("db"),
+  Options.withDescription("Number of days before today to start generating commits")
+)
+const daysAfter = Options.integer("days-after").pipe(
+  Options.withDefault(60),
+  Options.withAlias("da"),
+  Options.withDescription("Number of days after the start date to generate commits")
+)
+const frequency = Options.integer("frequency").pipe(
+  Options.withDefault(80),
+  Options.withAlias("f"),
+  Options.withDescription("Percentage chance (1-100) of creating commits on any given day")
+)
+const maxCommitsPerDay = Options.integer("max-commits-per-day").pipe(
+  Options.withDefault(15),
+  Options.withAlias("mcpd"),
+  Options.withDescription("Maximum number of commits to create per day")
+)
+const minCommitsPerDay = Options.integer("min-commits-per-day").pipe(
+  Options.withDefault(0),
+  Options.withAlias("mcpd"),
+  Options.withDescription("Minimum number of commits to create per day")
+)
+const noWeekends = Options.boolean("no-weekends").pipe(
+  Options.withDefault(false),
+  Options.withAlias("nw"),
+  Options.withDescription("Skip creating commits on weekends (Saturday and Sunday)")
+)
 
-const command = Command.make("hello", { daysBefore, daysAfter, frequency, maxCommitsPerDay, minCommitsPerDay }, ({
+const command = Command.make("git-commits", {
+  daysBefore,
+  daysAfter,
+  frequency,
+  maxCommitsPerDay,
+  noWeekends,
+  minCommitsPerDay
+}, ({
   daysAfter,
   daysBefore,
   frequency,
   maxCommitsPerDay,
-  minCommitsPerDay
+  minCommitsPerDay,
+  noWeekends
 }) =>
   Effect.gen(function*() {
     const repositoryPath = yield* initRepository
@@ -25,6 +58,10 @@ const command = Command.make("hello", { daysBefore, daysAfter, frequency, maxCom
 
     for (let i = 0; i < totalDays; i++) {
       const commitDate = firstDate.pipe(DateTime.addDuration(Duration.days(i)))
+      const weekDay = DateTime.getPart(commitDate, "weekDay")
+      if (noWeekends && [0, 6].includes(weekDay)) {
+        continue
+      }
       if ((yield* Random.nextIntBetween(1, 100)) > frequency) {
         continue
       }
@@ -108,6 +145,6 @@ const appendFile = (filePath: string, text: string) =>
   })
 
 export const run = Command.run(command, {
-  name: "Hello World",
+  name: "Git Commits",
   version: "0.0.0"
 })
