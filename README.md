@@ -1,4 +1,4 @@
-# GitHub Activity Generator
+# Git Commits Creator
 
 A TypeScript CLI tool built with [Effect](https://effect.website) that generates artificial GitHub commit activity. Create realistic commit histories across custom date ranges to simulate developer activity patterns.
 
